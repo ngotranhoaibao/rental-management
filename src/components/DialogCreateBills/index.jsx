@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,18 +19,45 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-function DialogCreateBills({ open, setOpen }) {
-  const [status, setStatus] = useState("unpaid");
-  const [month, setMonth] = useState("");  
-
+function DialogCreateBills({
+  open,
+  setOpen,
+  tenantId,
+  setTenantId,
+  roomId,
+  setRoomId,
+  month,
+  setMonth,
+  tenantList,
+  roomList,
+  status,
+  setStatus,
+  handleCreateBill,
+}) {
   useEffect(() => {
-    const currentMonth = new Date().toISOString().slice(0, 7);
-    setMonth(currentMonth);
-  }, [open]);  
+    if (open && !month) {
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      setMonth(currentMonth);
+    }
+  }, [open, setMonth, month]);
 
+  const [oldElectricityIndex, setOldElectricityIndex] = useState(0);
+  const [newElectricityIndex, setNewElectricityIndex] = useState(0);
+  const [oldWaterIndex, setOldWaterIndex] = useState(0);
+  const [newWaterIndex, setNewWaterIndex] = useState(0);
+  const [rent, setRent] = useState(0);
+  const [note, setNote] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    handleCreateBill(e);
+  };
+  console.log("tn",tenantList);
+  
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <form>
+      <form onSubmit={handleSubmit}>
         <DialogContent className="max-w-lg max-h-[85vh] p-0 overflow-hidden flex flex-col">
           <DialogHeader className="border-b p-6">
             <DialogTitle>Tạo Hóa Đơn Mới</DialogTitle>
@@ -44,29 +71,56 @@ function DialogCreateBills({ open, setOpen }) {
               <div className="flex gap-4">
                 <div className="flex-1 grid gap-2">
                   <Label htmlFor="tenant-1">Người Thuê *</Label>
-                  <Select id="tenant-1" name="tenantId">
+                  <Select
+                    value={tenantId}
+                    onValueChange={setTenantId}
+                    id="tenant-1"
+                    name="tenantId"
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Chọn người thuê" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="Van">Van</SelectItem>
-                        <SelectItem value="thanh">Thanh</SelectItem>
+                        {tenantList.length > 0 ? (
+                          tenantList.map((tenant) => (
+                            <SelectItem key={tenant._id} value={tenant._id}>
+                              {tenant.name}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="no-tenant-data" disabled>
+                            Không có người thuê nào
+                          </SelectItem>
+                        )}
                       </SelectGroup>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="flex-1 grid gap-2">
                   <Label htmlFor="room-1">Phòng *</Label>
-                  <Select id="room-1" name="roomId">
+                  <Select
+                    value={roomId}
+                    onValueChange={setRoomId}
+                    id="room-1"
+                    name="roomId"
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Chọn phòng" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="Phòng 103">Phòng 103</SelectItem>
-                        <SelectItem value="Phòng 102">Phòng 102</SelectItem>
-                        <SelectItem value="Phòng 101">Phòng 101</SelectItem>
+                        {roomList.length > 0 ? (
+                          roomList.map((room) => (
+                            <SelectItem key={room._id} value={room._id}>
+                              {room.name}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="no-room-data" disabled>
+                            Không có phòng nào
+                          </SelectItem>
+                        )}
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -79,12 +133,13 @@ function DialogCreateBills({ open, setOpen }) {
                     type="month"
                     id="month-1"
                     name="month"
-                    value={month} 
-                    onChange={(e) => setMonth(e.target.value)}  
+                    value={month}
+                    onChange={(e) => setMonth(e.target.value)}
                   />
                 </div>
               </div>
             </div>
+
             <div className="space-y-4 pt-2 border-t">
               <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                 Chỉ Số Điện Nước
@@ -96,7 +151,10 @@ function DialogCreateBills({ open, setOpen }) {
                     type="number"
                     id="oldElectricityIndex"
                     name="oldElectricityIndex"
-                    defaultValue="0"
+                    value={oldElectricityIndex}
+                    onChange={(e) =>
+                      setOldElectricityIndex(Number(e.target.value))
+                    }
                   />
                   <p className="text-muted-foreground text-sm">₫3.000/kWh</p>
                 </div>
@@ -106,7 +164,10 @@ function DialogCreateBills({ open, setOpen }) {
                     type="number"
                     id="newElectricityIndex"
                     name="newElectricityIndex"
-                    defaultValue="0"
+                    value={newElectricityIndex}
+                    onChange={(e) =>
+                      setNewElectricityIndex(Number(e.target.value))
+                    }
                   />
                   <p className="text-muted-foreground text-sm">₫3.000/kWh</p>
                 </div>
@@ -118,7 +179,8 @@ function DialogCreateBills({ open, setOpen }) {
                     type="number"
                     id="oldWaterIndex"
                     name="oldWaterIndex"
-                    defaultValue="0"
+                    value={oldWaterIndex}
+                    onChange={(e) => setOldWaterIndex(Number(e.target.value))}
                   />
                   <p className="text-muted-foreground text-sm">₫15.000/m³</p>
                 </div>
@@ -128,12 +190,14 @@ function DialogCreateBills({ open, setOpen }) {
                     type="number"
                     id="newWaterIndex"
                     name="newWaterIndex"
-                    defaultValue="0"
+                    value={newWaterIndex}
+                    onChange={(e) => setNewWaterIndex(Number(e.target.value))}
                   />
                   <p className="text-muted-foreground text-sm">₫15.000/m³</p>
                 </div>
               </div>
             </div>
+
             <div className="space-y-4 pt-2 border-t pb-2">
               <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                 Thanh Toán
@@ -145,12 +209,18 @@ function DialogCreateBills({ open, setOpen }) {
                     type="number"
                     id="rent"
                     name="rent"
-                    defaultValue="0"
+                    value={rent}
+                    onChange={(e) => setRent(Number(e.target.value))}
                   />
                 </div>
                 <div className="grid gap-2 w-full">
                   <Label htmlFor="status">Trạng Thái *</Label>
-                  <Select id="status" name="status" value={status} onChange={(e) => setStatus(e.target.value)}>
+                  <Select
+                    id="status"
+                    name="status"
+                    value={status}
+                    onValueChange={setStatus}
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Chọn trạng thái" />
                     </SelectTrigger>
@@ -164,6 +234,7 @@ function DialogCreateBills({ open, setOpen }) {
                 </div>
               </div>
             </div>
+
             <div className="space-y-4 pt-2 border-t pb-2">
               <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                 Ghi Chú
@@ -172,6 +243,8 @@ function DialogCreateBills({ open, setOpen }) {
                 <Textarea
                   id="note"
                   name="note"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
                   placeholder="Ghi chú thêm về hóa đơn..."
                   className="h-20"
                 />

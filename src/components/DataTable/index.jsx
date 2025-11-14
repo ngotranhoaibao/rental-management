@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/table";
 import { formatted } from "@/until/formatMoney";
 import { getNestedValue } from "@/until/getNestedValue";
-import { id } from "zod/v4/locales";
 
 const columnNames = {
   "tenantId.name": "Tenant",
@@ -23,7 +22,7 @@ const columnNames = {
   idCard: "ID Card",
 };
 
-const Datatable = ({ data, columns, actions }) => {
+const DataTable = ({ data, columns, actions }) => {
   const getBreakdown = (item) => {
     return (
       <>
@@ -60,7 +59,8 @@ const Datatable = ({ data, columns, actions }) => {
   };
 
   return (
-    <Table className="rounded-lg border ">
+    <div className="rounded-lg border">
+      <Table className=" ">
       <TableHeader>
         <TableRow>
           {columns.map((col, index) => (
@@ -96,7 +96,8 @@ const Datatable = ({ data, columns, actions }) => {
         )}
       </TableBody>
     </Table>
+    </div>
   );
 };
 
-export default Datatable;
+export default DataTable;

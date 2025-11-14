@@ -17,13 +17,10 @@ const TenantsPage = () => {
   const fetchTenants = async () => {
   try {
     setLoading(true);
-    const res = await getTenants(); // res = { success: true, data: [...] }
-    
-    // ⭐ SỬA: Kiểm tra và gán res?.data
-    if (res?.data) { 
-      setTenants(res.data); // Gán trực tiếp mảng tenants
+    const res = await getTenants(); 
+        if (res?.data) { 
+      setTenants(res.data); 
     } else {
-      // Trường hợp dữ liệu trả về nằm ngoài res.data, ví dụ: res = [...]
       setTenants(res || []);
     }
   } catch (error) {
