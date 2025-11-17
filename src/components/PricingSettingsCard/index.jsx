@@ -4,7 +4,16 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Zap, Droplets, Wifi, Sparkles } from "lucide-react";
 
-const PricingSettingsCard = ({ settings, setSettings }) => {
+const PricingSettingsCard = ({ settings, setSettings, 
+  // electricityPrice,
+  // setElectricityPrice, waterPrice,
+  // setWaterPrice,
+  // internetFee,
+  // setInternetFee,
+  // cleaningFee,
+  // setCleaningFee,
+  updateSettingsData
+ }) => {
 
 
   return (
@@ -14,7 +23,6 @@ const PricingSettingsCard = ({ settings, setSettings }) => {
         <CardDescription>Set the pricing for utilities and services</CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="space-y-4">
           <div className="grid gap-2">
             <label className="text-sm font-medium flex items-center gap-2"> 
               <Zap className="w-4 h-4 text-yellow-500" />
@@ -24,7 +32,9 @@ const PricingSettingsCard = ({ settings, setSettings }) => {
               type="number"
               name="electricityPrice"              
               placeholder="Enter price"
-            />
+              value ={settings.electricityPrice}
+              onChange={(e) => setSettings({...settings, electricityPrice: Number(e.target.value)})}
+              />
             <p className="text-muted-foreground text-sm">Price per kilowatt-hour (kWh)</p>
           </div>
 
@@ -37,6 +47,8 @@ const PricingSettingsCard = ({ settings, setSettings }) => {
               type="number"
               name="waterPrice"              
               placeholder="Enter price"
+              value ={settings.waterPrice}
+              onChange={(e) => setSettings({...settings, waterPrice: Number(e.target.value)})}
             />
             <p className="text-muted-foreground text-sm">Price per cubic meter (m³)</p>
           </div>
@@ -50,6 +62,8 @@ const PricingSettingsCard = ({ settings, setSettings }) => {
               type="number"
               name="internetFee"              
               placeholder="Enter price"
+              value ={settings.internetFee}
+              onChange={(e) => setSettings({...settings, internetFee: Number(e.target.value)})}
             />
             <p className="text-muted-foreground text-sm">Monthly internet fee</p>
           </div>
@@ -63,14 +77,17 @@ const PricingSettingsCard = ({ settings, setSettings }) => {
               type="number"
               name="cleaningFee"              
               placeholder="Enter price"
+              value ={settings.cleaningFee}
+              onChange={(e) => setSettings({...settings, cleaningFee: Number(e.target.value)})}
             />
             <p className="text-muted-foreground text-sm">Monthly cleaning fee (optional)</p>
           </div>
 
-          <Button type="submit" className="w-full">
+          <Button 
+          onClick = {updateSettingsData}
+           className="w-full">
             Save Settings
           </Button>
-        </form>
       </CardContent>
     </Card>
   );

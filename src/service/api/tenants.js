@@ -8,10 +8,12 @@ export const createTenant = async (tenantData) => {
     return response.data;
 }
 export const updateTenant = async (id, tenantData) => {
-    const response = await api.put(`/tenants/${id}`, tenantData);
-    return response.data;
+      return await api.put(`/tenants`, tenantData, {
+    params: { id: id },
+      });
 }
 export const deleteTenant = async (id) => {
-    const response = await api.delete(`/tenants/${id}`);
-    return response.data;
+      return await api.delete(`/tenants`, {
+    params: { id: id },
+      });
 }

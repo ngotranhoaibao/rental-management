@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import HeaderSection from "@/components/HeaderSection";
-import PricingSettingsCard from "@/components/AppSidebar/PricingSettingsCard";
+import PricingSettingsCard from "@/components/PricingSettingsCard";
 import { Spinner } from "@/components/ui/spinner";
-import { getSettings } from "@/service/api/settings";
+import { getSettings,updateSettings } from "@/service/api/settings";
 import toast from "react-hot-toast"; 
 
 const SettingsPage = () => {
@@ -12,18 +12,38 @@ const SettingsPage = () => {
     waterPrice: 0,
     cleaningFee: 0,
   });
+  // const [electricityPrice, setElectricityPrice] = useState(0);
+  // const [waterPrice, setWaterPrice] = useState(0);
+  // const [internetFee, setInternetFee] = useState(0);
+  // const [cleaningFee, setCleaningFee] = useState(0);
   const [loading, setLoading] = useState(false);
-
-  // Fetch settings data from API
   useEffect(() => {
     fetchSettings();
   }, []);
+
+  const updateSettingsData = async () => {
+    try {
+      debugger
+      console.log("")
+      setLoading(true);
+      const res = await updateSettings({
+        ...settings,
+        
+      });
+      toast.success("Settings updated successfully");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Error updating settings");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchSettings = async () => {
     try {
       setLoading(true);
       const res = await getSettings();
-      setSettings(res.data || {});
+      console.log("dataSetting",res)
+      setSettings(res || {});
     } catch (error) {
       toast.error(error?.response?.data?.message || "Error fetching settings");
     } finally {
@@ -44,7 +64,16 @@ const SettingsPage = () => {
       ) : (
         <PricingSettingsCard
           settings={settings}
-          setSettings={setSettings} // Pass setSettings directly for handling state change
+          setSettings={setSettings}
+          // electricityPrice={electricityPrice}
+          // setElectricityPrice={setElectricityPrice}
+          // waterPrice={waterPrice}
+          // setWaterPrice={setWaterPrice}
+          // internetFee={internetFee}
+          // setInternetFee={setInternetFee}
+          // cleaningFee={cleaningFee}
+          // setCleaningFee={setCleaningFee}
+          updateSettingsData={updateSettingsData}
         />
       )}
     </div>

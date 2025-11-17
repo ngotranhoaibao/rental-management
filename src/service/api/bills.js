@@ -7,10 +7,12 @@ export const createBill = async (billData) => {
     return response.data;
 }
 export const updateBill = async (id, billData) => {
-    const response = await api.put(`/bills/${id}`, billData);
-    return response.data;
+      return await api.put(`/bills`, billData, {
+    params: { id: id },
+      });
 }
 export const deleteBill = async (id) => {
-    const response = await api.delete(`/bills/${id}`);
-    return response.data;
+      return await api.delete(`/bills`, {
+    params: { id: id },
+      });
 }

@@ -21,6 +21,7 @@ const RoomsPage = () => {
   const [descriptionRoom, setDescriptionRoom] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editingRoomId, setEditingRoomId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const _id = Date.now();
   const handleOpenDiglog = () => {
     setIsEditing(false);
@@ -129,6 +130,9 @@ const RoomsPage = () => {
       </button>
     </>
   );
+  const filteredRooms = rooms.filter((room) =>
+    room.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="space-y-8">
@@ -138,12 +142,14 @@ const RoomsPage = () => {
         add="Create Room"
         placeholder="Search by room name..."
         handleOpenDiglog={handleOpenDiglog}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
       />
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Spinner />
         </div>
-      ) : (
+      ) : filteredRooms.length > 0 ? (
         <Card className="bg-white shadow-lg rounded-lg">
           <CardHeader>
             <CardTitle className="leading-none font-semibold">
@@ -152,13 +158,16 @@ const RoomsPage = () => {
           </CardHeader>
           <CardContent className="px-6">
             <Datatable
-              data={rooms}
+              data={filteredRooms}
               columns={roomColumns}
               actions={roomActions}
-              handleDeleteRoom={handleDeleteRoom}
             />
           </CardContent>
         </Card>
+      ) : (
+        <div className="text-center py-6 text-gray-500 font-medium">
+          No room found
+        </div>
       )}
       <DialogCreateRoom
         open={open}
